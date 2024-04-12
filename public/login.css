@@ -1,0 +1,70 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-image: url("assets/login_bg.png");
+    background-color: #000;
+    height: 100vh;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    overflow: hidden;
+    display: flex; /* Use flexbox */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+}
+
+.container {
+    width: 400px;
+    background-color: rgba(0, 0, 0, 0.8); /* Dark background with transparency */
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Increased shadow with transparency */
+}
+
+h2 {
+    text-align: center;
+    color: #fff; /* White text color */
+}
+
+input[type="text"],
+input[type="password"],
+button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: none; /* Removed border */
+    border-radius: 5px;
+    box-sizing: border-box;
+    background-color: rgba(255, 255, 255, 0.1); /* Transparent white background */
+    color: #fff; /* White text color */
+}
+
+input[type="text"]::placeholder,
+input[type="password"]::placeholder,
+button[type="submit"] {
+    color: #ccc; /* Light gray text color */
+}
+
+button[type="submit"] {
+    background-color: #990992;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover {
+    background-color: #6d0868;
+}
+
+.form-links {
+    text-align: center;
+    color: #fff; /* White text color */
+}
+
+.form-links a {
+    color: #990992;
+    text-decoration: none;
+}
+
+.form-links a:hover {
+    text-decoration: underline;
+}

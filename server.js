@@ -16,6 +16,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(express.json());
 
+// Set EJS as the view engine
+app.set('view engine', 'ejs');
+
+// Set the directory for views
+app.set('views', path.join(__dirname, 'views'));
+
 // Set up session management
 app.use(session({
     secret: 'secret',
@@ -113,7 +119,39 @@ app.get('/menu', (req,res) => {
         return res.status(401).send('Unauthorized');
     }
 
-    res.sendFile(path.join(__dirname, 'public', 'menu.html'));
+    const username = req.session.login;
+
+    // Render your HTML template and pass the username to it
+    res.render('menu', { username });
+});
+
+/* games */
+
+// Route to serve the /dice
+app.get('/dice', (req,res) => {
+    if (!req.session.login) {
+        return res.status(401).send('Unauthorized');
+    }
+
+    res.sendFile(path.join(__dirname, 'public', 'games', 'dice.html'));
+});
+
+// Route to serve the /dice
+app.get('/blackjack', (req,res) => {
+    if (!req.session.login) {
+        return res.status(401).send('Unauthorized');
+    }
+
+    res.sendFile(path.join(__dirname, 'public', 'games', 'blackjack.html'));
+});
+
+// Route to serve the /dice
+app.get('/roulette', (req,res) => {
+    if (!req.session.login) {
+        return res.status(401).send('Unauthorized');
+    }
+
+    res.sendFile(path.join(__dirname, 'public', 'games', 'roulette.html'));
 });
 
 // Catch-all route for handling 404 errors
