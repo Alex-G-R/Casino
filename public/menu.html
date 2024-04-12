@@ -10,21 +10,28 @@
 <body>
     <div class="top-bar">
         <span id="username"><%= username %></span>
-        <span id="money">$1000</span>
+        <span id="money">$<%= cash %></span>
     </div>
     <div class="games-container">
-        <div class="game" style="background-image: url('assets/dice.jpg')" onclick="playGame('slot-machine')">Dice</div>
-        <div class="game" style="background-image: url('assets/blacjack.jpg')" onclick="playGame('blackjack')">Blackjack</div>
-        <div class="game" style="background-image: url('assets/roulette.jpg')" onclick="playGame('roulette')">Roulette</div>
+        <div class="game" style="background-image: url('assets/dice.jpg')" onclick="playDice()">Dice</div>
+        <div class="game" style="background-image: url('assets/blacjack.jpg')" onclick="playBlackjack()">Blackjack</div>
+        <div class="game" style="background-image: url('assets/roulette.jpg')" onclick="playRoulette()">Roulette</div>
         <!-- Add more games here -->
     </div>
     <button class="settings-button">Settings</button>
 
     <script>
         // Function to handle playing a game
-        function playGame(gameName) {
-            // You can add logic here to navigate to the specific game page or perform other actions
-            console.log('Playing ' + gameName);
+        function playDice() {
+            window.location.href = '/dice';
+        }
+
+        function playBlackjack() {
+            window.location.href = '/blackjack';
+        }
+
+        function playRoulette() {
+            window.location.href = '/roulette';
         }
     </script>
 </body>
