@@ -81,6 +81,7 @@ app.post('/login', (req, res) => {
         if (results.length > 0) {
 
             req.session.login = results[0].login;
+            req.session.cash = results[0].cash;
 
             res.json({ message: 'Registration successful' }); // Send JSON response
 
@@ -120,9 +121,10 @@ app.get('/menu', (req,res) => {
     }
 
     const username = req.session.login;
+    const cash = req.session.cash;
 
     // Render your HTML template and pass the username to it
-    res.render('menu', { username });
+    res.render('menu', { username, cash });
 });
 
 /* games */
