@@ -1,5 +1,7 @@
+
 document.getElementById('loginForm').addEventListener('submit', function(event) {
     event.preventDefault(); // Prevent default form submission
+
     const formData = {
         username: document.getElementById('username').value,
         password: document.getElementById('password').value,
@@ -14,8 +16,15 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     })
     .then(response => response.json())
     .then(data => {
-        window.location.href = '/menu';
-        console.log(data);
+        console.log(data.message)
+        if(data.message == "Authentication failed")
+        {
+            window.location.href = '/login-fail';
+        }
+        else if(data.message == "Login successful")
+        {
+            window.location.href = '/menu';
+        }
     })
     .catch(error => {
         console.error('Error:', error);

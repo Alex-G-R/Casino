@@ -62,12 +62,12 @@ app.get('/login', (req,res) => {
 });
 
 app.post('/login', (req, res) => {
-    console.log(req.body)
+    console.log(req.body);
     const { username, password } = req.body;
 
     // Check if both username and password are provided
     if (!username || !password) {
-        return res.status(400).send('Both username and password are required.');
+        return res.status(400).send('Invalid username or password.');
     }
 
     // Query the database to check if the user exists
@@ -79,16 +79,22 @@ app.post('/login', (req, res) => {
 
         // Check if any rows are returned
         if (results.length > 0) {
-
             req.session.login = results[0].login;
             req.session.cash = results[0].cash;
 
-            res.json({ message: 'Registration successful' }); // Send JSON response
+            console.log("Login successful");
+            res.json({ message: 'Login successful' }); // Send JSON response
 
         } else {
-            res.status(401).send('Invalid username or password.');
+            console.log("Login not successful");
+            res.status(401).json({ message: 'Authentication failed' }); // Send JSON response
         }
     });
+});
+
+// Route to serve the /register
+app.get('/login-fail', (req,res) => {
+    res.sendFile(path.join(__dirname, 'public', 'login-fail.html'));
 });
 
 // Route to serve the /register
@@ -117,7 +123,7 @@ app.post('/register', (req, res) => {
 // Route to serve the /register
 app.get('/menu', (req,res) => {
     if (!req.session.login) {
-        return res.status(401).send('Unauthorized');
+        res.sendFile(path.join(__dirname, 'public', 'login.html'));
     }
 
     const username = req.session.login;
@@ -132,7 +138,7 @@ app.get('/menu', (req,res) => {
 // Route to serve the /dice
 app.get('/dice', (req,res) => {
     if (!req.session.login) {
-        return res.status(401).send('Unauthorized');
+        res.sendFile(path.join(__dirname, 'public', 'login.html'));
     }
 
     res.sendFile(path.join(__dirname, 'public', 'games', 'dice.html'));
@@ -141,7 +147,7 @@ app.get('/dice', (req,res) => {
 // Route to serve the /dice
 app.get('/blackjack', (req,res) => {
     if (!req.session.login) {
-        return res.status(401).send('Unauthorized');
+        res.sendFile(path.join(__dirname, 'public', 'login.html'));
     }
 
     res.sendFile(path.join(__dirname, 'public', 'games', 'blackjack.html'));
@@ -150,7 +156,7 @@ app.get('/blackjack', (req,res) => {
 // Route to serve the /dice
 app.get('/roulette', (req,res) => {
     if (!req.session.login) {
-        return res.status(401).send('Unauthorized');
+        res.sendFile(path.join(__dirname, 'public', 'login.html'));
     }
 
     res.sendFile(path.join(__dirname, 'public', 'games', 'roulette.html'));
