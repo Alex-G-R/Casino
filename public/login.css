@@ -22,7 +22,7 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Increased shadow with transparency */
 }
 
-h2 {
+h2, h1, h3 {
     text-align: center;
     color: #fff; /* White text color */
 }
