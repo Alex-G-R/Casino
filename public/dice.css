@@ -64,7 +64,11 @@ body {
     border: 1px solid #fff;
     outline: none; /* Remove outline */
 }
+.number-input::placeholder {
+    color: rgb(235, 235, 235); /* Change this color to the desired color */
+}
 .button {
+    position: relative; /* Add this line to make the position relative */
     background-color: rgba(0, 0, 0, 0.5); /* Black with 50% transparency */
     color: #fff; /* White text */
     border: none;
@@ -76,6 +80,41 @@ body {
     font-size: 24px;
     transition: background-color 0.3s;
     border: 1px #fff solid;
+}
+
+.tooltip {
+    visibility: hidden;
+    width: 120px;
+    background-color: rgba(100, 100, 100, 0.5);
+    color: #fff;
+    text-align: center;
+    border-radius: 15px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: -45px; 
+    left: 50%;
+    margin-left: -60px; /* Negative half of the width */
+    text-shadow: 
+        -1px -1px 0 #000,  
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000; /* Create a thicker black outline */
+}
+
+.tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: black transparent transparent transparent;
+}
+
+.button:hover .tooltip {
+    visibility: visible;
 }
 .button:hover {
     border: 1px #fff solid;
