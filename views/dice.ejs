@@ -83,6 +83,8 @@
                     })
                         .then(response => response.json())
                         .then(data => {
+                            console.log(data.moneyToDisplay)
+                            document.getElementById('money').innerText = `$${data.moneyToDisplay}`;
                             document.getElementById('result').innerText = data.resultText;
                             document.getElementById('sumOfDice').innerText = total;
                         })

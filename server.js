@@ -164,42 +164,46 @@ app.post('/rollDice', (req, res) => {
     let winAmount;
     let resultText;
 
+    const updateAndRespond = (amount) => {
+        // Update moneyToDisplay after add_cash is done
+        let moneyToDisplay = req.session.cash;
+        res.json({ resultText, moneyToDisplay });
+    };
+
     if (choice === 'more') {
         if (total > 7) {
             winAmount = (bet * 2.2).toFixed(2);
             resultText = `You win $${winAmount}!`;
-            add_cash(winAmount, req, res, req.session.login)
+            add_cash(winAmount, req, res, req.session.login, updateAndRespond)
         } else {
             winAmount = 0;
             resultText = "You lose.";
-            add_cash(-bet, req, res, req.session.login)
+            add_cash(-bet, req, res, req.session.login, updateAndRespond)
         }
     } else if (choice === 'less') {
         if (total < 7) {
             winAmount = (bet * 2.2).toFixed(2);
             resultText = `You win $${winAmount}!`;
-            add_cash(winAmount, req, res, req.session.login)
+            add_cash(winAmount, req, res, req.session.login, updateAndRespond)
         } else {
             winAmount = 0;
             resultText = "You lose.";
-            add_cash(-bet, req, res, req.session.login)
+            add_cash(-bet, req, res, req.session.login, updateAndRespond)
         }
     } else if (choice === 'equal') {
         if (total === 7) {
             winAmount = (bet * 5.2).toFixed(2);
             resultText = `You win $${winAmount}!`;
-            add_cash(winAmount, req, res, req.session.login)
+            add_cash(winAmount, req, res, req.session.login, updateAndRespond)
         } else {
             winAmount = 0;
             resultText = "You lose.";
-            add_cash(-bet, req, res, req.session.login)
+            add_cash(-bet, req, res, req.session.login, updateAndRespond)
         }
     }
-
-    res.json({ resultText });
 });
 
-function add_cash(amount, req, res, username) {
+function add_cash(amount, req, res, username, callback) {
     console.log(`Line 204 session.cash: ${req.session.cash}`)
     let newCash = parseFloat(req.session.cash) + parseFloat(amount);
     console.log(`Line 206 newCash: ${newCash}`)
@@ -222,13 +226,15 @@ function add_cash(amount, req, res, username) {
                 } else {
                     // Session saved successfully
                     console.log('Session saved successfully');
+                    console.log(`___________________________`)
                 }
             });
             console.log(`Line 218 session.cash: ${req.session.cash}`)
-            console.log(`___________________________`)
+            callback(); // Call the callback function to continue processing
         }
     );
 }
+
 
 // Route to serve the /dice
 app.get('/blackjack', (req, res) => {
