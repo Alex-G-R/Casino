@@ -172,7 +172,7 @@ app.post('/rollDice', (req, res) => {
 
     if (choice === 'more') {
         if (total > 7) {
-            winAmount = (bet * 2.3).toFixed(2);
+            winAmount = (bet * 1.95).toFixed(2);
             resultText = `You win $${winAmount}!`;
             add_cash(winAmount, req, res, req.session.login, updateAndRespond)
         } else {
@@ -182,7 +182,7 @@ app.post('/rollDice', (req, res) => {
         }
     } else if (choice === 'less') {
         if (total < 7) {
-            winAmount = (bet * 2.3).toFixed(2);
+            winAmount = (bet * 1.95).toFixed(2);
             resultText = `You win $${winAmount}!`;
             add_cash(winAmount, req, res, req.session.login, updateAndRespond)
         } else {
@@ -192,7 +192,7 @@ app.post('/rollDice', (req, res) => {
         }
     } else if (choice === 'equal') {
         if (total === 7) {
-            winAmount = (bet * 5.8).toFixed(2);
+            winAmount = (bet * 4.8).toFixed(2);
             resultText = `You win $${winAmount}!`;
             add_cash(winAmount, req, res, req.session.login, updateAndRespond)
         } else {
@@ -201,6 +201,21 @@ app.post('/rollDice', (req, res) => {
             add_cash(-bet, req, res, req.session.login, updateAndRespond)
         }
     }
+});
+
+// Route to handle dice roll and update cash
+app.post('/placeBet', (req, res) => {
+
+    const bet = parseFloat(req.body.bet);
+
+    const updateAndRespond = () => {
+        // Update moneyToDisplay after add_cash is done
+        let money = req.session.cash;
+        res.json({ money });
+    };
+
+    add_cash(-bet, req, res, req.session.login, updateAndRespond)
+   
 });
 
 function add_cash(amount, req, res, username, callback) {
