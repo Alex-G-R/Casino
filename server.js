@@ -153,9 +153,13 @@ app.get('/dice', (req, res) => {
 
 // Route to handle dice roll and update cash
 app.post('/rollDice', (req, res) => {
+    console.log(`Line 156 session.cash: ${req.session.cash}`)
+
     const bet = parseFloat(req.body.bet);
     const choice = req.body.choice;
     const total = req.body.total;
+
+    console.log(`Line 162 req body. bet: ${bet}, choice: ${choice}, total:${total}`)
 
     let winAmount;
     let resultText;
@@ -192,14 +196,13 @@ app.post('/rollDice', (req, res) => {
         }
     }
 
-    // For demonstration purposes, I'll send back the result and total to the client
     res.json({ resultText });
 });
 
-function add_cash(amount, req, res, username)
-{
-    
+function add_cash(amount, req, res, username) {
+    console.log(`Line 204 session.cash: ${req.session.cash}`)
     let newCash = parseFloat(req.session.cash) + parseFloat(amount);
+    console.log(`Line 206 newCash: ${newCash}`)
 
     connection.query(
         'UPDATE account SET cash = ? WHERE login = ?',
@@ -209,7 +212,20 @@ function add_cash(amount, req, res, username)
                 console.error('Error updating cash:', error);
                 return res.status(500).send('Error updating cash');
             }
+            console.log(`Line 216 session.cash: ${req.session.cash}`)
             req.session.cash = newCash; // Update cash in session
+            // Save session
+            req.session.save((err) => {
+                if (err) {
+                    // Handle error
+                    console.error('Error saving session:', err);
+                } else {
+                    // Session saved successfully
+                    console.log('Session saved successfully');
+                }
+            });
+            console.log(`Line 218 session.cash: ${req.session.cash}`)
+            console.log(`___________________________`)
         }
     );
 }
