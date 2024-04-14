@@ -141,7 +141,11 @@ app.get('/dice', (req,res) => {
         res.sendFile(path.join(__dirname, 'public', 'login.html'));
     }
 
-    res.sendFile(path.join(__dirname, 'public', 'games', 'dice.html'));
+    const username = req.session.login;
+    const cash = req.session.cash;
+
+    // Render your HTML template and pass the username to it
+    res.render('dice', { username, cash });
 });
 
 // Route to serve the /dice

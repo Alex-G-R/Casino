@@ -41,68 +41,49 @@ body {
     margin-left: auto; /* Push the cash amount to the far right */
     margin-right: calc(50% - (20px + 15px)); /* Adjust based on the width of username + some spacing */
 }
-.games-container {
-    width: 100vh;
-    display: flex;
-    flex-wrap: wrap;
+.games-container{
     justify-content: center;
-    padding: 20px;
-    margin-top: 100px; /* Adjust this value based on the height of your top bar */
-    max-height: calc(100vh - 150px); /* Adjust the 100px based on the height of your top bar */
-    overflow-y: auto;
-}
-/* Hide the default scrollbar */
-.games-container::-webkit-scrollbar {
-    width: 8px;
-}
-
-.games-container::-webkit-scrollbar-thumb {
-    background-color: #350a2b;
-    border-radius: 10px;
-}
-
-.games-container::-webkit-scrollbar-thumb:hover {
-    background-color: #0cffd6;
-}
-
-/* Track */
-.games-container::-webkit-scrollbar-track {
-    background: #5f094c;
-}
-
-/* Handle on hover */
-.games-container::-webkit-scrollbar-thumb:hover {
-    background: #3a042e;
-}
-.game {
-    width: calc(49.90% - 20px); /* 33.33% width with margin */
-    max-width: 520px; /* Maximum width for the game box */
-    height: 300px;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    margin: 15px;
     text-align: center;
-    line-height: 300px; /* Centering text vertically */
-    font-size: 71px;
+    color: #fff;
+    font-size: 2.5em;
     text-shadow: 
         -2px -2px 0 #000,  
         2px -2px 0 #000,
         -2px 2px 0 #000,
         2px 2px 0 #000; /* Create a thicker black outline */
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s;
-    border-radius: 15px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    position: relative;
-    border: 5px solid #fff;
-    color: #fff;
-    font-weight: 700;
 }
-.game:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    transform: translateY(-5px) scale(1.05);
+.number-input {
+    width: 300px;
+    height: 60px;
+    border: none;
+    background-color: rgba(0, 0, 0, 0.5); /* Black with 50% transparency */
+    color: #fff; /* White text */
+    border-radius: 20px; /* Rounded corners */
+    padding: 5px 10px;
+    font-size: 36px;
+    border: 1px solid #fff;
+    outline: none; /* Remove outline */
+}
+.button {
+    background-color: rgba(0, 0, 0, 0.5); /* Black with 50% transparency */
+    color: #fff; /* White text */
+    border: none;
+    margin: 20px;
+    margin-top: 70px;
+    padding: 10px 20px;
+    border-radius: 20px; /* Rounded corners */
+    cursor: pointer;
+    font-size: 24px;
+    transition: background-color 0.3s;
+    border: 1px #fff solid;
+}
+.button:hover {
+    border: 1px #fff solid;
+    color: #000;
+    background-color: rgba(255, 255, 255, 1); 
+}
+.game-results{
+    min-height: 336px;
 }
 .settings-button {
     position: fixed;
