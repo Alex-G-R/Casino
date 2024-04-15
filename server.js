@@ -178,7 +178,6 @@ app.post('/rollDice', (req, res) => {
         } else {
             winAmount = 0;
             resultText = "You lose.";
-            add_cash(-bet, req, res, req.session.login, updateAndRespond)
         }
     } else if (choice === 'less') {
         if (total < 7) {
@@ -188,7 +187,6 @@ app.post('/rollDice', (req, res) => {
         } else {
             winAmount = 0;
             resultText = "You lose.";
-            add_cash(-bet, req, res, req.session.login, updateAndRespond)
         }
     } else if (choice === 'equal') {
         if (total === 7) {
@@ -198,7 +196,6 @@ app.post('/rollDice', (req, res) => {
         } else {
             winAmount = 0;
             resultText = "You lose.";
-            add_cash(-bet, req, res, req.session.login, updateAndRespond)
         }
     }
 });
