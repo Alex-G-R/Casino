@@ -14,7 +14,7 @@ function placeBet(choice) {
     })
         .then(response => response.json())
         .then(data => {
-            document.getElementById('money').innerText = `$${(data.money).toFixed(2)}`;
+            document.getElementById('money').innerText = `$${data.money}`;
 
             // Animate the rolling dice using canvas
             let canvas1 = document.getElementById('diceCanvas1');
@@ -59,7 +59,7 @@ function placeBet(choice) {
                         .then(response => response.json())
                         .then(data => {
                             console.log(data.moneyToDisplay)
-                            document.getElementById('money').innerText = `$${(data.moneyToDisplay).toFixed(2)}`;
+                            document.getElementById('money').innerText = `$${data.moneyToDisplay}`;
                             document.getElementById('result').innerText = data.resultText;
                             document.getElementById('sumOfDice').innerText = total;
                         })

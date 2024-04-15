@@ -129,7 +129,7 @@ app.get('/menu', (req, res) => {
     }
 
     const username = req.session.login;
-    const cash = (req.session.cash).toFixed(2);
+    const cash = parseFloat(req.session.cash).toFixed(2);
 
     // Render your HTML template and pass the username to it
     res.render('menu', { username, cash });
@@ -144,7 +144,7 @@ app.get('/dice', (req, res) => {
     }
 
     const username = req.session.login;
-    const cash = (req.session.cash).toFixed(2);
+    const cash = parseFloat(req.session.cash).toFixed(2);
 
     // Render your HTML template and pass the username to it
     res.render('dice', { username, cash });
@@ -219,8 +219,8 @@ app.post('/placeBet', (req, res) => {
 });
 
 function add_cash(amount, req, res, username, callback) {
-    console.log(`Line 204 session.cash: ${(req.session.cash).toFixed(2)}`)
-    let newCash = parseFloat((req.session.cash).toFixed(2)) + parseFloat(amount);
+    console.log(`Line 204 session.cash: ${req.session.cash}`)
+    let newCash = parseFloat(req.session.cash) + parseFloat(amount);
     console.log(`Line 206 newCash: ${newCash}`)
 
     connection.query(
@@ -231,8 +231,8 @@ function add_cash(amount, req, res, username, callback) {
                 console.error('Error updating cash:', error);
                 return res.status(500).send('Error updating cash');
             }
-            console.log(`Line 216 session.cash: ${(req.session.cash).toFixed(2)}`)
-            (req.session.cash).toFixed(2) = newCash; // Update cash in session
+            console.log(`Line 216 session.cash: ${req.session.cash}`)
+            req.session.cash = newCash; // Update cash in session
             // Save session
             req.session.save((err) => {
                 if (err) {
@@ -244,7 +244,7 @@ function add_cash(amount, req, res, username, callback) {
                     console.log(`___________________________`)
                 }
             });
-            console.log(`Line 218 session.cash: ${(req.session.cash).toFixed(2)}`)
+            console.log(`Line 218 session.cash: ${req.session.cash}`)
             callback(); // Call the callback function to continue processing
         }
     );
