@@ -82,7 +82,7 @@ app.post('/login', (req, res) => {
         // Check if any rows are returned
         if (results.length > 0) {
             req.session.login = results[0].login;
-            req.session.cash = results[0].cash;
+            req.session.cash = (results[0].cash).toFixed(2);
 
             console.log("Login successful");
             res.json({ message: 'Login successful' }); // Send JSON response
@@ -129,7 +129,7 @@ app.get('/menu', (req, res) => {
     }
 
     const username = req.session.login;
-    const cash = req.session.cash;
+    const cash = (req.session.cash).toFixed(2);
 
     // Render your HTML template and pass the username to it
     res.render('menu', { username, cash });
@@ -144,7 +144,7 @@ app.get('/dice', (req, res) => {
     }
 
     const username = req.session.login;
-    const cash = req.session.cash;
+    const cash = (req.session.cash).toFixed(2);
 
     // Render your HTML template and pass the username to it
     res.render('dice', { username, cash });
@@ -153,7 +153,7 @@ app.get('/dice', (req, res) => {
 
 // Route to handle dice roll and update cash
 app.post('/rollDice', (req, res) => {
-    console.log(`Line 156 session.cash: ${req.session.cash}`)
+    console.log(`Line 156 session.cash: ${(req.session.cash).toFixed(2)}`)
 
     const bet = parseFloat(req.body.bet);
     const choice = req.body.choice;
@@ -166,13 +166,13 @@ app.post('/rollDice', (req, res) => {
 
     const updateAndRespond = (amount) => {
         // Update moneyToDisplay after add_cash is done
-        let moneyToDisplay = req.session.cash;
+        let moneyToDisplay = (req.session.cash).toFixed(2);
         res.json({ resultText, moneyToDisplay });
     };
 
     if (choice === 'more') {
         if (total > 7) {
-            winAmount = (bet * 2.3).toFixed(2);
+            winAmount = (bet * 1.95).toFixed(2);
             resultText = `You win $${winAmount}!`;
             add_cash(winAmount, req, res, req.session.login, updateAndRespond)
         } else {
@@ -182,7 +182,7 @@ app.post('/rollDice', (req, res) => {
         }
     } else if (choice === 'less') {
         if (total < 7) {
-            winAmount = (bet * 2.3).toFixed(2);
+            winAmount = (bet * 1.95).toFixed(2);
             resultText = `You win $${winAmount}!`;
             add_cash(winAmount, req, res, req.session.login, updateAndRespond)
         } else {
@@ -192,7 +192,7 @@ app.post('/rollDice', (req, res) => {
         }
     } else if (choice === 'equal') {
         if (total === 7) {
-            winAmount = (bet * 5.2).toFixed(2);
+            winAmount = (bet * 4.85).toFixed(2);
             resultText = `You win $${winAmount}!`;
             add_cash(winAmount, req, res, req.session.login, updateAndRespond)
         } else {
@@ -210,7 +210,7 @@ app.post('/placeBet', (req, res) => {
 
     const updateAndRespond = () => {
         // Update moneyToDisplay after add_cash is done
-        let money = req.session.cash;
+        let money = (req.session.cash).toFixed(2);
         res.json({ money });
     };
 
@@ -219,8 +219,8 @@ app.post('/placeBet', (req, res) => {
 });
 
 function add_cash(amount, req, res, username, callback) {
-    console.log(`Line 204 session.cash: ${req.session.cash}`)
-    let newCash = parseFloat(req.session.cash) + parseFloat(amount);
+    console.log(`Line 204 session.cash: ${(req.session.cash).toFixed(2)}`)
+    let newCash = parseFloat((req.session.cash).toFixed(2)) + parseFloat(amount);
     console.log(`Line 206 newCash: ${newCash}`)
 
     connection.query(
@@ -231,8 +231,8 @@ function add_cash(amount, req, res, username, callback) {
                 console.error('Error updating cash:', error);
                 return res.status(500).send('Error updating cash');
             }
-            console.log(`Line 216 session.cash: ${req.session.cash}`)
-            req.session.cash = newCash; // Update cash in session
+            console.log(`Line 216 session.cash: ${(req.session.cash).toFixed(2)}`)
+            (req.session.cash).toFixed(2) = newCash; // Update cash in session
             // Save session
             req.session.save((err) => {
                 if (err) {
@@ -244,7 +244,7 @@ function add_cash(amount, req, res, username, callback) {
                     console.log(`___________________________`)
                 }
             });
-            console.log(`Line 218 session.cash: ${req.session.cash}`)
+            console.log(`Line 218 session.cash: ${(req.session.cash).toFixed(2)}`)
             callback(); // Call the callback function to continue processing
         }
     );
