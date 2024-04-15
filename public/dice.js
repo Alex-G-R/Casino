@@ -16,8 +16,6 @@ function placeBet(choice) {
         .then(data => {
             document.getElementById('money').innerText = `$${(data.money).toFixed(2)}`;
 
-            let total;
-
             // Animate the rolling dice using canvas
             let canvas1 = document.getElementById('diceCanvas1');
             let ctx1 = canvas1.getContext('2d');
