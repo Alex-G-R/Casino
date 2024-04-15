@@ -153,13 +153,10 @@ app.get('/dice', (req, res) => {
 
 // Route to handle dice roll and update cash
 app.post('/rollDice', (req, res) => {
-    console.log(`Line 156 session.cash: ${(req.session.cash).toFixed(2)}`)
 
     const bet = parseFloat(req.body.bet);
     const choice = req.body.choice;
     const total = req.body.total;
-
-    console.log(`Line 162 req body. bet: ${bet}, choice: ${choice}, total:${total}`)
 
     let winAmount;
     let resultText;
@@ -208,20 +205,29 @@ app.post('/placeBet', (req, res) => {
 
     const bet = parseFloat(req.body.bet);
 
+    let cash_status;
+
     const updateAndRespond = () => {
         // Update moneyToDisplay after add_cash is done
-        let money = (req.session.cash).toFixed(2);
-        res.json({ money });
+        let money = parseFloat(req.session.cash).toFixed(2);
+        res.json({ money, cash_status });
     };
 
-    add_cash(-bet, req, res, req.session.login, updateAndRespond)
-   
+    if(parseFloat(bet) > parseFloat(req.session.cash))
+    {
+        cash_status = 0;
+        add_cash(0, req, res, req.session.login, updateAndRespond)
+    }
+    else
+    {
+        cash_status = 1;
+        add_cash(-bet, req, res, req.session.login, updateAndRespond)
+    }
 });
 
 function add_cash(amount, req, res, username, callback) {
-    console.log(`Line 204 session.cash: ${req.session.cash}`)
+
     let newCash = parseFloat(req.session.cash) + parseFloat(amount);
-    console.log(`Line 206 newCash: ${newCash}`)
 
     connection.query(
         'UPDATE account SET cash = ? WHERE login = ?',
@@ -231,7 +237,6 @@ function add_cash(amount, req, res, username, callback) {
                 console.error('Error updating cash:', error);
                 return res.status(500).send('Error updating cash');
             }
-            console.log(`Line 216 session.cash: ${req.session.cash}`)
             req.session.cash = newCash; // Update cash in session
             // Save session
             req.session.save((err) => {
@@ -240,11 +245,8 @@ function add_cash(amount, req, res, username, callback) {
                     console.error('Error saving session:', err);
                 } else {
                     // Session saved successfully
-                    console.log('Session saved successfully');
-                    console.log(`___________________________`)
                 }
             });
-            console.log(`Line 218 session.cash: ${req.session.cash}`)
             callback(); // Call the callback function to continue processing
         }
     );
