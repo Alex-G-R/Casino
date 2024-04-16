@@ -17,9 +17,13 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     .then(response => response.json())
     .then(data => {
         console.log(data.message)
-        if(data.message == "Authentication failed")
+        if(data.message == "Account not found")
         {
-            window.location.href = '/login-fail';
+            window.location.href = '/login-account-fail';
+        }
+        else if(data.message == "Password is incorrect")
+        {
+            window.location.href = '/login-password-fail';
         }
         else if(data.message == "Login successful")
         {
