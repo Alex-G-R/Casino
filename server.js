@@ -3,6 +3,7 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const path = require('path');
 const mysql = require('mysql');
+const bcrypt = require('bcrypt');
 
 
 /* Set-up the app */
@@ -58,81 +59,114 @@ mysql_connect_database(connection, SQL_HOST, SQL_USER, SQL_DATABASE);
 
 /* Handle routes */
 
+// Route to serve the /register
+app.get('/register',(req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'register.html'));
+});
+
+app.post('/register', async (req, res) => {
+    try {
+        const { full_name, username, password, email } = req.body; // Extract data from request body
+
+        // Hash the password with bcrypt
+        const hashedPassword = await bcrypt.hash(password, 10); // Salt rounds = 10
+
+        // SQL query with placeholders for parameterized query
+        let sql = 'INSERT INTO account (full_name, login, password, email) VALUES (?, ?, ?, ?)';
+
+        // Parameter array
+        let params = [full_name, username, hashedPassword, email];
+
+        // Execute parameterized query
+        connection.query(sql, params, function (err, result) {
+            if (err) {
+                console.error('Failed to insert record:', err);
+                return res.status(500).json({ error: 'Internal server error' });
+            }
+            console.log("1 record inserted");
+            res.json({ message: 'Registration successful' });
+        });
+    }
+    catch (error) {
+        console.error('Error during registration:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 // Route to serve the /login
 app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
-app.post('/login', (req, res) => {
-    console.log(req.body);
-    const { username, password } = req.body;
+app.post('/login', async (req, res) => {
+    try {
+        const { username, password } = req.body;
 
-    // Check if both username and password are provided
-    if (!username || !password) {
-        return res.status(400).send('Invalid username or password.');
+        // Check if both username and password are provided
+        if (!username || !password) {
+            return res.status(400).send('Invalid username or password.');
+        }
+
+        // Query the database to check if the user exists
+        connection.query('SELECT * FROM account WHERE login = ?', [username], async (error, results) => {
+            if (error) {
+                console.error('Error querying database:', error);
+                return res.status(500).send('Internal server error.');
+            }
+
+            // Check if any rows are returned
+            if (results.length > 0) {
+                // User found
+                const user = results[0];
+
+                // Compare password with hash stored in database
+                const isMatch = await bcrypt.compare(password, user.password);
+
+                if (isMatch) {
+                    // Password matches, set session details and respond with success
+                    req.session.login = user.login;
+                    req.session.cash = (user.cash).toFixed(2);
+
+                    res.json({ message: 'Login successful' }); // Send JSON response
+                } else {
+                    // Password does not match
+                    res.status(401).json({ message: 'Password is incorrect' });
+                }
+
+            } else {
+                // User not found
+                res.status(401).json({ message: 'Account not found' }); // Send JSON response
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
     }
-
-    // Query the database to check if the user exists
-    connection.query('SELECT * FROM account WHERE login = ? AND password = ?', [username, password], (error, results) => {
-        if (error) {
-            console.error('Error querying database:', error);
-            return res.status(500).send('Internal server error.');
-        }
-
-        // Check if any rows are returned
-        if (results.length > 0) {
-            req.session.login = results[0].login;
-            req.session.cash = (results[0].cash).toFixed(2);
-
-            console.log("Login successful");
-            res.json({ message: 'Login successful' }); // Send JSON response
-
-        } else {
-            console.log("Login not successful");
-            res.status(401).json({ message: 'Authentication failed' }); // Send JSON response
-        }
-    });
 });
 
-// Route to serve the /register
-app.get('/login-fail', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'login-fail.html'));
+// Route to serve the /login fails
+app.get('/login-account-fail', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'login-account-fail.html'));
 });
 
-// Route to serve the /register
-app.get('/register', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'register.html'));
+app.get('/login-password-fail', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'login-password-fail.html'));
 });
 
-app.post('/register', (req, res) => {
-
-    console.log(req.body)
-    const { full_name, username, password, email } = req.body; // Extract username and password from request body
-
-    let sql = `INSERT INTO account (full_name, login, password, email) VALUES ('${full_name}', '${username}', '${password}', '${email}')`;
-
-    console.log(sql)
-
-    connection.query(sql, function (err, result) {
-        if (err) throw err;
-        console.log("1 record inserted");
-    });
-
-    res.json({ message: 'Registration successful' }); // Send JSON response
-});
 
 
 // Route to serve the /register
 app.get('/menu', (req, res) => {
     if (!req.session.login) {
-        res.sendFile(path.join(__dirname, 'public', 'login.html'));
+        res.redirect('/login');
     }
+    else
+    {
+        const username = req.session.login;
+        const cash = parseFloat(req.session.cash).toFixed(2);
 
-    const username = req.session.login;
-    const cash = parseFloat(req.session.cash).toFixed(2);
-
-    // Render your HTML template and pass the username to it
-    res.render('menu', { username, cash });
+        // Render your HTML template and pass the username to it
+        res.render('menu', { username, cash });
+    }
 });
 
 /* games */
@@ -140,7 +174,7 @@ app.get('/menu', (req, res) => {
 // Route to serve the /dice
 app.get('/dice', (req, res) => {
     if (!req.session.login) {
-        res.sendFile(path.join(__dirname, 'public', 'login.html'));
+        res.redirect('/login');
     }
 
     const username = req.session.login;
@@ -253,25 +287,30 @@ function add_cash(amount, req, res, username, callback) {
 }
 
 
-// Route to serve the /dice
+// Route to serve the /blackjack
 app.get('/blackjack', (req, res) => {
     if (!req.session.login) {
-        res.sendFile(path.join(__dirname, 'public', 'login.html'));
+        res.redirect('/login');
     }
 
     res.sendFile(path.join(__dirname, 'public', 'blackjack.html'));
 });
 
-// Route to serve the /dice
+// Route to serve the /roulette
 app.get('/roulette', (req, res) => {
     if (!req.session.login) {
-        res.sendFile(path.join(__dirname, 'public', 'login.html'));
+        res.redirect('/login');
     }
 
     res.sendFile(path.join(__dirname, 'public', 'roulette.html'));
 });
 
+// Route to serve the /page-not-found
+app.get('/page-not-found', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'page-not-found.html'));
+});
+
 // Catch-all route for handling 404 errors
 app.use((req, res) => {
-    res.status(404).send('Page not found :)');
+    res.redirect('/page-not-found');
 });
