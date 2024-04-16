@@ -103,7 +103,7 @@ body {
     background-color: rgba(255, 255, 255, 0.1);
     transform: translateY(-5px) scale(1.05);
 }
-.settings-button {
+.logout-button {
     position: fixed;
     bottom: 20px;
     right: 20px;
@@ -118,7 +118,7 @@ body {
     font-size: 20px;
     font-weight: 700;
 }
-.settings-button:hover {
+.logout-button:hover {
     background-color: #ffffff;
     color: #000000;
     transform: translateY(-5px);

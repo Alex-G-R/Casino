@@ -88,20 +88,19 @@ app.post('/register', async (req, res) => {
         {
             // Hash the password with bcrypt
             const hashedPassword = await bcrypt.hash(password, 10); // Salt rounds = 10
-            
+
             // SQL query with placeholders for parameterized query
             let sql = 'INSERT INTO account (full_name, login, password, email) VALUES (?, ?, ?, ?)';
-            
+
             // Parameter array
             let params = [full_name, username, hashedPassword, email];
-            
+
             // Execute parameterized query
             connection.query(sql, params, function (err, result) {
                 if (err) {
                     console.error('Failed to insert record:', err);
                     return res.status(500).json({ error: 'Internal server error' });
                 }
-                console.log("1 record inserted");
                 res.json({ message: 'Registration successful' });
             });
         }
@@ -176,6 +175,17 @@ app.get('/login-password-fail', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'login-password-fail.html'));
 });
 
+// Handle log-out fetch
+app.post('/log-out', async (req, res) => {
+    try {
+        req.session.login = null;
+        req.session.cash = null;
+
+        res.json({ message: 'Log-out succesfull' }); // Send JSON response
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 
 // Route to serve the /register

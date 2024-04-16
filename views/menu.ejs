@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,9 +8,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="menu.css">
 </head>
+
 <body>
     <div class="top-bar">
-        <span id="username"><%= username %></span>
+        <span id="username">
+            <%= username %>
+        </span>
         <span id="money">$<%= cash %></span>
     </div>
     <div class="games-container">
@@ -18,7 +22,7 @@
         <div class="game" style="background-image: url('assets/roulette.jpg')" onclick="playRoulette()">Roulette</div>
         <!-- Add more games here -->
     </div>
-    <button class="settings-button">Settings</button>
+    <button class="logout-button" id="logOut">Log-out</button>
 
     <script>
         // Function to handle playing a game
@@ -33,6 +37,26 @@
         function playRoulette() {
             window.location.href = '/roulette';
         }
+
+        // logout
+        const logOutButton = document.getElementById('logOut');
+
+        logOutButton.addEventListener('click', () => {
+            fetch('/log-out', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    window.location.href = '/login';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
     </script>
 </body>
+
 </html>
