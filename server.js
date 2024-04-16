@@ -68,29 +68,53 @@ app.post('/register', async (req, res) => {
     try {
         const { full_name, username, password, email } = req.body; // Extract data from request body
 
-        // Hash the password with bcrypt
-        const hashedPassword = await bcrypt.hash(password, 10); // Salt rounds = 10
-
-        // SQL query with placeholders for parameterized query
-        let sql = 'INSERT INTO account (full_name, login, password, email) VALUES (?, ?, ?, ?)';
-
-        // Parameter array
-        let params = [full_name, username, hashedPassword, email];
-
-        // Execute parameterized query
-        connection.query(sql, params, function (err, result) {
-            if (err) {
-                console.error('Failed to insert record:', err);
-                return res.status(500).json({ error: 'Internal server error' });
-            }
-            console.log("1 record inserted");
-            res.json({ message: 'Registration successful' });
+        // Check if the login is not taken
+        const existingUsers = await new Promise((resolve, reject) => {
+            connection.query('SELECT * FROM account WHERE login = ?', [username], (error, results) => {
+                if (error) {
+                    console.error('Error querying database:', error);
+                    reject(error);
+                } else {
+                    resolve(results);
+                }
+            });
         });
+
+        if (existingUsers.length > 0) {
+            // User found
+            res.json({ message: 'This user exists' });
+        }
+        else 
+        {
+            // Hash the password with bcrypt
+            const hashedPassword = await bcrypt.hash(password, 10); // Salt rounds = 10
+            
+            // SQL query with placeholders for parameterized query
+            let sql = 'INSERT INTO account (full_name, login, password, email) VALUES (?, ?, ?, ?)';
+            
+            // Parameter array
+            let params = [full_name, username, hashedPassword, email];
+            
+            // Execute parameterized query
+            connection.query(sql, params, function (err, result) {
+                if (err) {
+                    console.error('Failed to insert record:', err);
+                    return res.status(500).json({ error: 'Internal server error' });
+                }
+                console.log("1 record inserted");
+                res.json({ message: 'Registration successful' });
+            });
+        }
     }
     catch (error) {
         console.error('Error during registration:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
+});
+
+// Route to serve the /this-user-exists
+app.get('/this-user-exists', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'this-user-exists.html'));
 });
 
 // Route to serve the /login

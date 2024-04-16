@@ -16,8 +16,14 @@ document.getElementById('registrationForm').addEventListener('submit', function(
     })
     .then(response => response.json())
     .then(data => {
-        window.location.href = '/login';
-        console.log(data);
+        if(data.message == 'This user exists')
+        {
+            window.location.href = '/this-user-exists'
+        }
+        else if (data.message == 'Registration successful')
+        {
+            window.location.href = '/login';
+        }
     })
     .catch(error => {
         console.error('Error:', error);
