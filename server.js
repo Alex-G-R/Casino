@@ -59,6 +59,7 @@ mysql_connect_database(connection, SQL_HOST, SQL_USER, SQL_DATABASE);
 
 /* Handle routes */
 
+
 // Route to serve the /register
 app.get('/register',(req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'register.html'));
@@ -190,9 +191,7 @@ app.post('/log-out', async (req, res) => {
 
 // Route to serve the /register
 app.get('/menu', (req, res) => {
-    if (!req.session.login) {
-        res.redirect('/login');
-    }
+    if(!req.session.login) { res.redirect('/login'); }
     else
     {
         const username = req.session.login;
@@ -200,22 +199,22 @@ app.get('/menu', (req, res) => {
 
         // Render your HTML template and pass the username to it
         res.render('menu', { username, cash });
-    }
+    }   
 });
 
 /* games */
 
 // Route to serve the /dice
 app.get('/dice', (req, res) => {
-    if (!req.session.login) {
-        res.redirect('/login');
-    }
-
-    const username = req.session.login;
-    const cash = parseFloat(req.session.cash).toFixed(2);
-
-    // Render your HTML template and pass the username to it
-    res.render('dice', { username, cash });
+    if(!req.session.login) { res.redirect('/login'); }
+    else
+    {
+        const username = req.session.login;
+        const cash = parseFloat(req.session.cash).toFixed(2);
+        
+        // Render your HTML template and pass the username to it
+        res.render('dice', { username, cash });
+    }   
 });
 
 
@@ -323,20 +322,20 @@ function add_cash(amount, req, res, username, callback) {
 
 // Route to serve the /blackjack
 app.get('/blackjack', (req, res) => {
-    if (!req.session.login) {
-        res.redirect('/login');
+    if(!req.session.login) { res.redirect('/login'); }
+    else
+    {
+        res.sendFile(path.join(__dirname, 'public', 'blackjack.html'));  
     }
-
-    res.sendFile(path.join(__dirname, 'public', 'blackjack.html'));
 });
 
 // Route to serve the /roulette
 app.get('/roulette', (req, res) => {
-    if (!req.session.login) {
-        res.redirect('/login');
+    if(!req.session.login) { res.redirect('/login'); }
+    else
+    {
+        res.sendFile(path.join(__dirname, 'public', 'roulette.html'));   
     }
-
-    res.sendFile(path.join(__dirname, 'public', 'roulette.html'));
 });
 
 // Route to serve the /page-not-found
